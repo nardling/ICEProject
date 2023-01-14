@@ -5,8 +5,6 @@ int main() {
 
     generator.generateValidStrips();
     generator.generateCompatibleStrips();
-    
-    // printCompatibleStrips(allCompatibleStrips);
 
     auto totalOptions = generator.calculateOptions();
 
