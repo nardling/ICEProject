@@ -73,10 +73,7 @@ class topFivePctContainer {
                 head_ = newNode;
                 splits_.updateNewHeadForSplits(head_);
             } else {
-                node* checkAgainst0 = splits_.findInsertPointInSplits(newNumber, nullptr, 0);
-                node* checkAgainst1 = splits_.findInsertPointInSplits(newNumber, checkAgainst0, 1);
-                node* checkAgainst2 = splits_.findInsertPointInSplits(newNumber, checkAgainst1, 2);
-                node* checkAgainst = splits_.findInsertPointInSplits(newNumber, checkAgainst2, 3);
+                node* checkAgainst = splits_.findInsertPointInSplits(newNumber);
 
                 while (checkAgainst->next && newNumber > checkAgainst->value) {
                     checkAgainst = checkAgainst->next;

@@ -5,9 +5,9 @@
 
 class splitList {
     public:
-        splitList(size_t size, int splitPct) : splitCount_(size), splitPct_(splitPct) {
-            splits_.reserve(size);
-            lastSeenSplits_.reserve(size);
+        splitList(int splitCount, int splitPct) : splitCount_(splitCount), splitPct_(splitPct) {
+            splits_.reserve(splitCount_);
+            lastSeenSplits_.reserve(splitCount_);
         }
 
     void updateNewHeadForSplits(node* newHead) {
@@ -51,9 +51,19 @@ class splitList {
         return start->prev;
     }
 
+    node* findInsertPointInSplits(const double& newNumber) {
+        int splitIndex = 0;
+        node* returnValue = nullptr;
+        while (splitIndex < splitCount_) {
+            returnValue = findInsertPointInSplits(newNumber, returnValue, splitIndex);
+            ++splitIndex;
+        }
+        return returnValue;
+    }
+
     public:
         std::vector<node*> splits_;
         std::vector<node*> lastSeenSplits_;
-        const size_t splitCount_;
+        const int splitCount_;
         const int splitPct_;
 };
