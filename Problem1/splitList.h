@@ -5,16 +5,17 @@
 
 class splitList {
     public:
-        splitList(int splitCount, int splitPct) : splitCount_(splitCount), splitPct_(splitPct) {
+        splitList(int splitCount, int splitPct, size_t numberCount = 128000000) : splitCount_(splitCount), splitPct_(splitPct) {
             splits_.reserve(splitCount_);
             lastSeenSplits_.reserve(splitCount_);
+            numbers_ = (node*)malloc(sizeof(node) * numberCount);
         }
 
     void updateNewHeadForSplits(node* newHead) {
         node* child = newHead;
         for (int i = (splitCount_ - 1); i >= 0; --i) {
             node* splitStart = splits_[i];
-            node* newNode = new node();
+            node* newNode = &numbers_[counter_++]; //new node();
             newNode->value = newHead->value;
             newNode->prev = child;
             newNode->next = splitStart;
@@ -26,7 +27,7 @@ class splitList {
     void insertSplit(node* newNode, size_t level) {
         if ((rand() % 100) < splitPct_) {
             node* lastSeen = lastSeenSplits_[level];
-            node* newSplit = new node();
+            node* newSplit = &numbers_[counter_++]; //new node();
             newSplit->value = newNode->value;
             newSplit->next = lastSeen->next;
             lastSeen->next = newSplit;
@@ -64,6 +65,8 @@ class splitList {
     public:
         std::vector<node*> splits_;
         std::vector<node*> lastSeenSplits_;
+        node* numbers_ = nullptr;
+        size_t counter_ = 0;
         const int splitCount_;
         const int splitPct_;
 };
