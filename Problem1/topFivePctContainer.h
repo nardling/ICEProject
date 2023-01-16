@@ -1,13 +1,17 @@
+#pragma once
+
 #include "splitList.h"
+#include "nodeAllocator.h"
 
 class topFivePctContainer {
     public:
-        topFivePctContainer(splitList& splits, const size_t size) : splits_(splits), fifthPctCounter_(1 + (size * 0.05)) {
-            numbers_ = (node*)malloc(sizeof(node) * size);
+        topFivePctContainer(splitList& splits, nodeAllocator& allocator, const size_t size) : 
+            splits_(splits), allocator_(allocator), fifthPctCounter_(1 + (size * 0.05)) {
+            // numbers_ = (node*)malloc(sizeof(node) * size);
         }
 
         ~topFivePctContainer() {
-            free((void*)numbers_);
+            // free((void*)numbers_);
         }
 
         double getMarker() const {
@@ -15,7 +19,7 @@ class topFivePctContainer {
         }
 
         void insertFirst(double newNumber) {
-            node* newNode = &numbers_[counter_];
+            node* newNode = allocator_.getLeafNode();
             ++counter_;
             newNode->value = newNumber;
             head_ = newNode;
@@ -24,7 +28,7 @@ class topFivePctContainer {
         }
 
         void insertSecond(double newNumber) {
-            node* newNode = &numbers_[counter_];
+            node* newNode = allocator_.getLeafNode();
             ++counter_;
             newNode->value = newNumber;
             if (newNumber < head_->value) {
@@ -67,7 +71,7 @@ class topFivePctContainer {
             if (!checkNewNumberAgainstMin(newNumber))
                 return;
 
-            node* newNode = &numbers_[counter_++];
+            node* newNode = allocator_.getLeafNode();
             newNode->value = newNumber;
 
             // find where to insert
@@ -112,9 +116,10 @@ class topFivePctContainer {
 
     private:
         splitList& splits_;
+        nodeAllocator& allocator_;
 
     public:
-        node* numbers_ = nullptr;
+        // node* numbers_ = nullptr;
         node* fifthP_ = nullptr;
         node* fifthPCount_ = nullptr;
         node* head_ = nullptr;

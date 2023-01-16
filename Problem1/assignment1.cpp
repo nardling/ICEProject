@@ -4,19 +4,21 @@
 
 // On my laptop, RAND MAX is 2147483647
 
+// #define ARRAY_SIZE 12800000
 #define ARRAY_SIZE 12800000
-// #define ARRAY_SIZE 128000000
+#define ALLOCATION_SIZE 12800000
 #define CARDINALITY 128000000
 #define PRINT_INTERVAL 524287
 
 int main() {
-    splitList splits(10, 2, ARRAY_SIZE); // 4, 1 comes in at 8 minutes
+    nodeAllocator allocator(ALLOCATION_SIZE);
+    splitList splits(10, 2, allocator); // 4, 1 comes in at 8 minutes
    
-    topFivePctContainer container(splits, ARRAY_SIZE);
+    topFivePctContainer container(splits, allocator, ARRAY_SIZE);
     srand((unsigned)time(0));
 
-    container.insertFirst((double)(rand() % ARRAY_SIZE));
-    container.insertSecond((double)(rand() % ARRAY_SIZE));
+    container.insertFirst((double)(rand() % CARDINALITY));
+    container.insertSecond((double)(rand() % CARDINALITY));
 
     for (int i = 2; i < ARRAY_SIZE; ++ i){
         container.insertNumber((double)(rand() % CARDINALITY));

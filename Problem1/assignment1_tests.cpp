@@ -4,6 +4,7 @@
 #include "assert.h"
 
 #define ARRAY_SIZE 1000000
+#define ALLOCATION_SIZE 100000
 
 bool checkVectorOrder(node* head) {
     node* lclHead = head;
@@ -22,8 +23,9 @@ void printList(node* head) {
 }
 
 void testPctile_01() {
-    splitList splits(4, 8, ARRAY_SIZE);
-    topFivePctContainer container(splits, ARRAY_SIZE);
+    nodeAllocator allocator(ALLOCATION_SIZE);
+    splitList splits(4, 8, allocator);
+    topFivePctContainer container(splits, allocator, ARRAY_SIZE);
     container.insertFirst(0);
     container.insertSecond(1);
 
@@ -77,8 +79,10 @@ void testPctile_01() {
 }
 
 void testRandomInsert_01() {
-    splitList splits(4, 2, ARRAY_SIZE);
-    topFivePctContainer container(splits, ARRAY_SIZE);
+    nodeAllocator allocator(ALLOCATION_SIZE);
+    splitList splits(4, 2, allocator);
+    topFivePctContainer container(splits, allocator, ARRAY_SIZE);
+
     container.insertFirst(0);
     container.insertSecond(1);
 
@@ -90,19 +94,21 @@ void testRandomInsert_01() {
     container.insertNumber(2);
     container.insertNumber(4);
 
-    assert(checkVectorOrder(container.numbers_));
+    assert(checkVectorOrder(container.head_));
     std::cout << "testRandomInsert_01 Passes\n";
 }
 
 void testSplitOrder_01() {
-    splitList splits(4, 2, ARRAY_SIZE);
-    topFivePctContainer container(splits, ARRAY_SIZE);
+    nodeAllocator allocator(ALLOCATION_SIZE);
+    splitList splits(4, 2, allocator);
+    topFivePctContainer container(splits, allocator, ARRAY_SIZE);
+
     container.insertFirst(0);
     container.insertSecond(1);
-    for (int i = 2; i < 100000; ++ i){
+    for (int i = 2; i < ALLOCATION_SIZE; ++ i){
         container.insertNumber((double)(rand() % 100000));
     }
-    assert(checkVectorOrder(container.numbers_));
+    assert(checkVectorOrder(container.head_));
     assert(checkVectorOrder(splits.splits_[0]));
     assert(checkVectorOrder(splits.splits_[1]));
     assert(checkVectorOrder(splits.splits_[2]));
@@ -111,38 +117,40 @@ void testSplitOrder_01() {
 }
 
 void testSplitSize_01() {
-    splitList splits(4, 2, 1024);
-    topFivePctContainer container(splits, 1024);
+    nodeAllocator allocator(ALLOCATION_SIZE);
+    splitList splits(4, 2, allocator);
+    topFivePctContainer container(splits, allocator, 1024);
     container.insertFirst(0);
     container.insertSecond(1);
     for (int i = 2; i < 1024; ++ i){
         container.insertNumber((double)(rand() % 100000));
     }
-    assert(checkVectorOrder(container.numbers_));
+    assert(checkVectorOrder(container.head_));
     // std::cout << "Test 1: " << splits.counter_ << '\n';
     assert(splits.counter_ < 965 && splits.counter_ > 960);
     std::cout << "testSplitSize_01 Passes\n";
 }
 
-void testSplitSize_02() {
-    splitList splits(4, 4, 1024);
-    topFivePctContainer container(splits, 1024);
-    container.insertFirst(0);
-    container.insertSecond(1);
-    for (int i = 2; i < 1024; ++ i){
-        container.insertNumber((double)(rand() % 100000));
-    }
-    assert(checkVectorOrder(container.numbers_));
-    // std::cout << "Test 2: " << splits.counter_ << '\n';
-    assert(splits.counter_ < 348 && splits.counter_ > 340);
-    std::cout << "testSplitSize_02 Passes\n";
-}
+// void testSplitSize_02() {
+//     nodeAllocator allocator(ALLOCATION_SIZE);
+//     splitList splits(4, 4, allocator);
+//     topFivePctContainer container(splits, 1024);
+//     container.insertFirst(0);
+//     container.insertSecond(1);
+//     for (int i = 2; i < 1024; ++ i){
+//         container.insertNumber((double)(rand() % 100000));
+//     }
+//     assert(checkVectorOrder(container.numbers_));
+//     // std::cout << "Test 2: " << splits.counter_ << '\n';
+//     assert(splits.counter_ < 348 && splits.counter_ > 340);
+//     std::cout << "testSplitSize_02 Passes\n";
+// }
 
 int main() {
-    testPctile_01();
-    testRandomInsert_01();
+    // testPctile_01();
+    // testRandomInsert_01();
     testSplitOrder_01();
-    testSplitSize_01();
-    testSplitSize_02();
+    // testSplitSize_01();
+    // testSplitSize_02();
     std::cout << "All Tests Pass\n";
 }

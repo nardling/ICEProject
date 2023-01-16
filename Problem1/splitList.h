@@ -1,3 +1,5 @@
+#pragma once
+
 #include "node.h"
 #include "stdlib.h"
 #include <vector>
@@ -5,18 +7,19 @@
 #include <math.h>
 #include <stdexcept>
 #include <iostream>
+#include "nodeAllocator.h"
 
 class splitList {
     public:
-        splitList(int splitCount, int splitPct, size_t numberCount = 128000000) : splitCount_(splitCount), splitPct_(splitPct) {
+        splitList(int splitCount, int splitPct, nodeAllocator& allocator) : allocator_(allocator), splitCount_(splitCount), splitPct_(splitPct) {
             if (pow(2, floor(log2(splitPct))) != splitPct || splitPct < 2) {
                 throw new std::runtime_error("Split Pct Must Be a Power of 2 greater than 1");
             }
             splits_.reserve(splitCount);
             lastSeenSplits_.reserve(splitCount);
             for (int i = 0; i < splitCount; ++i) {
-                splits_[i] = nullptr;
-                lastSeenSplits_[i] = nullptr;
+                splits_.push_back(nullptr);
+                lastSeenSplits_.push_back(nullptr);
             }
 
             splitFilters_.reserve(splitCount);
@@ -25,24 +28,22 @@ class splitList {
                 splitFilters_[i] = lclSplitPct - 1;
                 lclSplitPct *= splitPct;
             }
-            numbers_ = (node*)malloc(sizeof(node) * numberCount);
         }
 
         ~splitList() {
-            free((void*)numbers_);
-            for (auto p : splits_) {
-                delete(p);
-            }
-            for (auto p : lastSeenSplits_) {
-                delete(p);
-            }
+            // for (auto p : splits_) {
+            //     delete(p);
+            // }
+            // for (auto p : lastSeenSplits_) {
+            //     delete(p);
+            // }
         }
 
     void updateNewHeadForSplits(node* newHead) {
         node* child = newHead;
         for (int i = (splitCount_ - 1); i >= 0; --i) {
             node* splitStart = splits_[i];
-            node* newNode = &numbers_[counter_++]; //new node();
+            node* newNode = allocator_.getSplitNode();
             newNode->value = newHead->value;
             newNode->prev = child;
             newNode->next = splitStart;
@@ -57,7 +58,7 @@ class splitList {
         if ((counter & splitFilters_[level]) == 0) {
             // std::cout << " Passes\n";
             node* lastSeen = lastSeenSplits_[level];
-            node* newSplit = &numbers_[counter_++]; //new node();
+            node* newSplit = allocator_.getSplitNode();
             newSplit->value = newNode->value;
             newSplit->next = lastSeen->next;
             lastSeen->next = newSplit;
@@ -98,11 +99,13 @@ class splitList {
         return returnValue;
     }
 
+    private:
+        nodeAllocator& allocator_;
+
     public:
         std::vector<node*> splits_;
         std::vector<node*> lastSeenSplits_;
-        std::vector<int> splitFilters_;
-        node* numbers_ = nullptr;
+        std::vector<int> splitFilters_;        
         size_t counter_ = 0;
         const int splitCount_;
         const int splitPct_;
