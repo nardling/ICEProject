@@ -6,6 +6,10 @@ class topFivePctContainer {
             numbers_ = (node*)malloc(sizeof(node) * size);
         }
 
+        ~topFivePctContainer() {
+            free((void*)numbers_);
+        }
+
         double getMarker() const {
             return fifthP_->value;
         }
@@ -91,7 +95,7 @@ class topFivePctContainer {
                     checkAgainst->prev = newNode;
                     newNode->prev->next = newNode;
                 }
-                splits_.insertSplit(newNode);
+                splits_.insertSplit(newNode, counter_);
             }
 
             if (newNumber > fifthP_->value) {

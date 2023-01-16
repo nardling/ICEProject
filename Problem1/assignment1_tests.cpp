@@ -13,8 +13,16 @@ bool checkVectorOrder(node* head) {
     return lclHead->next == nullptr;
 }
 
+void printList(node* head) {
+    node* lclHead = head;
+    while (lclHead) {
+        std::cout << lclHead->value << '\n';
+        lclHead = lclHead->next;
+    }
+}
+
 void testPctile_01() {
-    splitList splits(4, 10);
+    splitList splits(4, 8, ARRAY_SIZE);
     topFivePctContainer container(splits, ARRAY_SIZE);
     container.insertFirst(0);
     container.insertSecond(1);
@@ -65,10 +73,11 @@ void testPctile_01() {
                 break;
         }
     }
+    std::cout << "testPctile_01 Passes\n";
 }
 
 void testRandomInsert_01() {
-    splitList splits(4, 10);
+    splitList splits(4, 2, ARRAY_SIZE);
     topFivePctContainer container(splits, ARRAY_SIZE);
     container.insertFirst(0);
     container.insertSecond(1);
@@ -82,10 +91,11 @@ void testRandomInsert_01() {
     container.insertNumber(4);
 
     assert(checkVectorOrder(container.numbers_));
+    std::cout << "testRandomInsert_01 Passes\n";
 }
 
 void testSplitOrder_01() {
-    splitList splits(4, 10);
+    splitList splits(4, 2, ARRAY_SIZE);
     topFivePctContainer container(splits, ARRAY_SIZE);
     container.insertFirst(0);
     container.insertSecond(1);
@@ -97,11 +107,42 @@ void testSplitOrder_01() {
     assert(checkVectorOrder(splits.splits_[1]));
     assert(checkVectorOrder(splits.splits_[2]));
     assert(checkVectorOrder(splits.splits_[3]));
+    std::cout << "testSplitOrder_01 Passes\n";
+}
+
+void testSplitSize_01() {
+    splitList splits(4, 2, 1024);
+    topFivePctContainer container(splits, 1024);
+    container.insertFirst(0);
+    container.insertSecond(1);
+    for (int i = 2; i < 1024; ++ i){
+        container.insertNumber((double)(rand() % 100000));
+    }
+    assert(checkVectorOrder(container.numbers_));
+    // std::cout << "Test 1: " << splits.counter_ << '\n';
+    assert(splits.counter_ < 965 && splits.counter_ > 960);
+    std::cout << "testSplitSize_01 Passes\n";
+}
+
+void testSplitSize_02() {
+    splitList splits(4, 4, 1024);
+    topFivePctContainer container(splits, 1024);
+    container.insertFirst(0);
+    container.insertSecond(1);
+    for (int i = 2; i < 1024; ++ i){
+        container.insertNumber((double)(rand() % 100000));
+    }
+    assert(checkVectorOrder(container.numbers_));
+    // std::cout << "Test 2: " << splits.counter_ << '\n';
+    assert(splits.counter_ < 348 && splits.counter_ > 340);
+    std::cout << "testSplitSize_02 Passes\n";
 }
 
 int main() {
-    // testPctile_01();
-    // testRandomInsert_01();
+    testPctile_01();
+    testRandomInsert_01();
     testSplitOrder_01();
+    testSplitSize_01();
+    testSplitSize_02();
     std::cout << "All Tests Pass\n";
 }
