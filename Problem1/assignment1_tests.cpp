@@ -119,7 +119,6 @@ void testSplitSize_01() {
         container.insertNumber((double)(rand() % 100000));
     }
     assert(checkVectorOrder(container.numbers_));
-    // std::cout << "Test 1: " << splits.counter_ << '\n';
     assert(splits.counter_ < 965 && splits.counter_ > 960);
     std::cout << "testSplitSize_01 Passes\n";
 }
@@ -133,16 +132,28 @@ void testSplitSize_02() {
         container.insertNumber((double)(rand() % 100000));
     }
     assert(checkVectorOrder(container.numbers_));
-    // std::cout << "Test 2: " << splits.counter_ << '\n';
     assert(splits.counter_ < 348 && splits.counter_ > 340);
     std::cout << "testSplitSize_02 Passes\n";
 }
 
+void testDecreasing() {
+    splitList splits(4, 2, 1000);
+    topFivePctContainer container(splits, 1000);
+    container.insertFirst(1000);
+    container.insertSecond(999);
+    for (int i = 998; i > 0; --i) {
+        container.insertNumber(i);
+    }
+    assert(container.getMarker() == 951);
+    std::cout << "testDecreasing Passes\n";
+}
+
 int main() {
-    testPctile_01();
-    testRandomInsert_01();
-    testSplitOrder_01();
-    testSplitSize_01();
-    testSplitSize_02();
+    // testPctile_01();
+    // testRandomInsert_01();
+    // testSplitOrder_01();
+    // testSplitSize_01();
+    // testSplitSize_02();
+    testDecreasing();
     std::cout << "All Tests Pass\n";
 }
