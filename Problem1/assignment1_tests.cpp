@@ -97,12 +97,12 @@ void testRandomInsert_01() {
 void testSplitOrder_01() {
     splitList splits(4, 2, ARRAY_SIZE);
     topFivePctContainer container(splits, ARRAY_SIZE);
-    container.insertFirst(0);
-    container.insertSecond(1);
+    container.insertFirst((double)(rand() % 100000));
+    container.insertSecond((double)(rand() % 100000));
     for (int i = 2; i < 100000; ++ i){
         container.insertNumber((double)(rand() % 100000));
     }
-    assert(checkVectorOrder(container.numbers_));
+    assert(checkVectorOrder(container.head_));
     assert(checkVectorOrder(splits.splits_[0]));
     assert(checkVectorOrder(splits.splits_[1]));
     assert(checkVectorOrder(splits.splits_[2]));
@@ -116,7 +116,7 @@ void testSplitSize_01() {
     container.insertFirst(0);
     container.insertSecond(1);
     for (int i = 2; i < 1024; ++ i){
-        container.insertNumber((double)(rand() % 100000));
+        container.insertNumber(i);
     }
     assert(checkVectorOrder(container.numbers_));
     assert(splits.counter_ < 965 && splits.counter_ > 960);
@@ -128,8 +128,8 @@ void testSplitSize_02() {
     topFivePctContainer container(splits, 1024);
     container.insertFirst(0);
     container.insertSecond(1);
-    for (int i = 2; i < 1024; ++ i){
-        container.insertNumber((double)(rand() % 100000));
+    for (int i = 2; i < 1024; ++i){
+        container.insertNumber(i);
     }
     assert(checkVectorOrder(container.numbers_));
     assert(splits.counter_ < 348 && splits.counter_ > 340);
@@ -150,10 +150,10 @@ void testDecreasing() {
 
 int main() {
     // testPctile_01();
-    // testRandomInsert_01();
-    // testSplitOrder_01();
-    // testSplitSize_01();
-    // testSplitSize_02();
-    testDecreasing();
+    testRandomInsert_01();
+    testSplitOrder_01();
+    testSplitSize_01();
+    testSplitSize_02();
+    // testDecreasing();
     std::cout << "All Tests Pass\n";
 }

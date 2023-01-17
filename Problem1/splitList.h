@@ -8,7 +8,7 @@
 
 class splitList {
     public:
-        splitList(int splitCount, int splitPct, size_t numberCount = 128000000) : splitCount_(splitCount), splitPct_(splitPct) {
+        splitList(int splitCount, int splitPct, size_t numberCount) : splitCount_(splitCount), splitPct_(splitPct) {
             if (pow(2, floor(log2(splitPct))) != splitPct || splitPct < 2) {
                 throw new std::runtime_error("Split Pct Must Be a Power of 2 greater than 1");
             }
@@ -52,10 +52,7 @@ class splitList {
     }
 
     void insertSplit(node* newNode, size_t level, size_t counter) {
-        // if ((rand() % 100) < splitPct_) {
-            // std::cout << "Counter: " << counter << " Level " << level << " filter " << splitFilters_[level];
         if ((counter & splitFilters_[level]) == 0) {
-            // std::cout << " Passes\n";
             node* lastSeen = lastSeenSplits_[level];
             node* newSplit = &numbers_[counter_++]; //new node();
             newSplit->value = newNode->value;
@@ -64,8 +61,6 @@ class splitList {
             newSplit->prev = newNode;
             if (level > 0)
                 insertSplit(newSplit, level - 1, counter);
-        } else {
-            // std::cout << " Does Not Pass\n";
         }
     }
 
@@ -76,15 +71,13 @@ class splitList {
     node* findInsertPointInSplits(const double& newNumber, node* prevStart, int splitIndex) {
         node* start = prevStart ? prevStart : splits_[splitIndex];
 
-        if (start == nullptr) {
-            throw new std::runtime_error("Start is nullptr");
-        }
-
         while (start->next && start->next->value < newNumber) {
             start = start->next;
         }
-        // repurposing here for pointer to next level down
+
+        // repurposing "prev" here for pointer to next level down
         lastSeenSplits_[splitIndex] = start;
+
         return start->prev;
     }
 

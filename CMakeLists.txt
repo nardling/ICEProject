@@ -8,4 +8,3 @@ add_executable(Assignment2Tests "Problem2/assignment2_tests.cpp")
 
 add_executable(Assignment1 "Problem1/assignment1.cpp")
 add_executable(Assignment1Tests "Problem1/assignment1_tests.cpp")
-add_executable(Assignment1Timings "Problem1/assignment1_timings.cpp")
